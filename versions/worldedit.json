@@ -1,0 +1,9 @@
+{
+  "LOCATION": "./plugins",
+  "versions": {
+    "0.1": {
+      "URL": "https://github.com/IntellectualSites/FastAsyncWorldEdit/releases/download/2.4.10/FastAsyncWorldEdit-Bukkit-2.4.10.jar",
+      "FILE-NAME": "FastAsyncWorldEdit-Bukkit-2.4.10.jar"
+    }
+  }
+}

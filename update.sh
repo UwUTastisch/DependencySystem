@@ -55,7 +55,7 @@ fileExist() {
     return 0
 }
 
-files=($(ls -A versions/))
+files=($(ls -A versions/ | grep ".json"))
 for var in "${files[@]}"
 do
     echo "${var}"

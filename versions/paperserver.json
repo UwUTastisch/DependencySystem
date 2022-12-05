@@ -1,0 +1,13 @@
+{
+  "LOCATION": ".",
+  "versions": {
+    "0.0": {
+      "URL": "https://api.papermc.io/v2/projects/paper/versions/1.19.2/builds/303/downloads/paper-1.19.2-303.jar",
+      "FILE-NAME": "paper-1.19.2-303.jar"
+    },
+    "0.1": {
+      "URL": "https://api.papermc.io/v2/projects/paper/versions/1.19.2/builds/304/downloads/paper-1.19.2-304.jar",
+      "FILE-NAME": "paper-1.19.2-304.jar"
+    }
+  }
+}

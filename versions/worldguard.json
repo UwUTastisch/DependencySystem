@@ -1,0 +1,9 @@
+{
+  "LOCATION": "./plugins",
+  "versions": {
+    "0.1": {
+      "URL": "https://mediafilez.forgecdn.net/files/3677/516/worldguard-bukkit-7.0.7-dist.jar",
+      "FILE-NAME": "worldguard-bukkit-7.0.7-dist.jar"
+    }
+  }
+}
