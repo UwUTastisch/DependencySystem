@@ -64,7 +64,7 @@ fileExist() {
 
 fileShaCheck() {
   sha512sum "$1"
-  if [[ $? == "$2" ]]; then
+  if [[ $? == "$2 $1" ]]; then
       return 1
     fi
     return 0
@@ -130,8 +130,8 @@ do
     echo "$oldVersion"
   fi
 
-  shaSum=$(jq -r ".versions.$neededVersion.\"SHA512\"" versions/"${var}")
-  if [[ -z $shaSum ]]; then
+  shaSum=$(jq -r ".versions.$neededVersion.SHA512" versions/"${var}")
+  if [[ $shaSum != "" ]]; then
     check=$(fileShaCheck "$file" "$shaSum")
     if [[ $check == 0 ]]; then
       echo "[ERROR] sha not matching: $file <-> "
@@ -143,7 +143,6 @@ do
   else
     echo "[WARNING] no SHA512 check for $file"
   fi
-  iof
 
 done
 
