@@ -26,7 +26,7 @@ vercomp () {
         return 1
     fi
     local IFS=.
-    local i ver1=("$arg1") ver2=("$arg2")
+    local i ver1=($arg1) ver2=($arg2)
     # fill empty fields in ver1 with zeros
     for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
     do
@@ -133,15 +133,15 @@ do
   shaSum=$(jq -r ".versions.$neededVersion.\"SHA512\"" versions/"${var}")
   if [[ -z $shaSum ]]; then
     check=$(fileShaCheck "$file" "$shaSum")
-    echo "sha512sum-Check $check"
     if [[ $check == 0 ]]; then
-      echo "problem: sha not matching: $file <-> "
+      echo "[ERROR] sha not matching: $file <-> "
       mv "$file" "$file.dis"
       echo "File: $file disabled"
       exit 0
     fi
+    echo "SHA512 validated successful file:"
   else
-    echo "Waring: no SHA512 check for $file"
+    echo "[WARNING] no SHA512 check for $file"
   fi
   iof
 
