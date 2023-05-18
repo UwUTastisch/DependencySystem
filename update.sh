@@ -11,12 +11,12 @@ if [[ $v != "" ]]; then
   VERSION=$v
 fi
 if [[ ${VERSION} == "" ]]; then
-  echo "you need to define your version as a argument -> ./update 0.1"
+  echo "[ERROR] you need to define your version as a argument -> ./update 0.1"
   exit 0
 fi
 #version=$(cat currentVersion.json | jq ".version")
 #echo $version
-    
+
 vercomp () {
     arg1=$(echo "$1" | tr -d '"') #remove " from versions
     arg2=$(echo "$2" | tr -d '"')
@@ -55,7 +55,7 @@ vercomp () {
 }
 
 fileExist() {
-    #$1 file 
+    #$1 file
     if [[ -f "$1" ]]; then
         return 1
     fi
@@ -63,10 +63,12 @@ fileExist() {
 }
 
 fileShaCheck() {
-  sha512sum "$1"
-  if [[ $? == "$2 $1" ]]; then
-      return 1
-    fi
+  file=$1
+  sha=$2
+  shalocal=$(sha512sum "$file")
+  if [[ $shalocal == "$sha  $file" ]]; then
+    return 1
+  fi
     return 0
 }
 
@@ -76,7 +78,7 @@ files=($(ls -A versions/ | grep ".json"))
 #if [[ ${files[0]} == "" ]]; then exit; fi
 for var in "${files[@]}"
 do
-  echo "${var}"
+  echo "[FILE] edit file: ${var}"
   ver=$VERSION
   mapfile -t arr < <(jq -r ".versions | keys" versions/${var})
   unset arr[0]
@@ -100,7 +102,7 @@ do
     file=$location/$(jq -r ".versions.$a.\"FILE-NAME\"" versions/${var})
     fileExist "$file"
     exists=$?
-    echo "$a $op $VERSION compvalue $comp file:$file exist:$exists"
+    echo "[VERSION CHECK] $a $op $VERSION compvalue $comp file:$file exist:$exists"
     if [[ $exists == 1 ]]
     then
       existingVersions+=$a
@@ -109,7 +111,7 @@ do
 
 
   for (( i=0; i<${#existingVersions[@]}; i++ )); do
-    echo remove check ${#existingVersions[@]} ${existingVersions[i]} $neededVersion
+    echo "[FILE] remove check ${#existingVersions[@]} ${existingVersions[i]} $neededVersion"
     if [[ ${existingVersions[i]} == $neededVersion ]]; then
       existingVersions=( "${existingVersions[@]:0:$i}" "${existingVersions[@]:$((i + 1))}" )
       i=$((i - 1))
@@ -125,21 +127,22 @@ do
   if [[ $? == 0 ]]; then
     echo neededversion $neededVersion
     URL=$(jq -r ".versions.$neededVersion.\"URL\"" versions/"${var}")
-    echo get Version: $neededVersion
+    echo "[DOWNLOAD] get Version: $neededVersion"
     wget $URL -P $location
     echo "$oldVersion"
   fi
 
   shaSum=$(jq -r ".versions.$neededVersion.SHA512" versions/"${var}")
-  if [[ $shaSum != "" ]]; then
-    check=$(fileShaCheck "$file" "$shaSum")
-    if [[ $check == 0 ]]; then
-      echo "[ERROR] sha not matching: $file <-> "
+  #echo $shaSum
+  if [[ $shaSum != "null" ]]; then
+    fileShaCheck "$file" "$shaSum"
+    if [[ $? == 0 ]]; then
+      echo "[ERROR] sha does not matching: $file"
       mv "$file" "$file.dis"
-      echo "File: $file disabled"
+      echo "[File]: $file disabled"
       exit 0
     fi
-    echo "SHA512 validated successful file:"
+    echo "[SHA512] validated successful file:" $file
   else
     echo "[WARNING] no SHA512 check for $file"
   fi
